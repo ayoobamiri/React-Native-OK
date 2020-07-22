@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-import { Text, View, ScrollView, FlatList,
-    Modal, Button, StyleSheet,
-    Alert, PanResponder } from 'react-native'; import { Card, Icon, Rating, Input } from 'react-native-elements';
+import { Text, View, ScrollView, FlatList, Modal, Button, StyleSheet, Alert, PanResponder } from 'react-native';
+import { Card, Icon, Rating, Input } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
 import { postFavorite, postComment } from '../redux/ActionCreators';
 import * as Animatable from 'react-native-animatable';
-
 
 const mapStateToProps = state => {
     return {
@@ -27,13 +25,15 @@ function RenderCampsite(props) {
 
     const view = React.createRef();
 
-    const recognizeDrag = ({dx}) => (dx < -200) ? true : false;
+    const recognizeDrag = ({ dx }) => (dx < -200) ? true : false;
+
+    const recognizeComment = ({ dx }) => (dx > 200) ? true : false;
 
     const panResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => true,
         onPanResponderGrant: () => {
             view.current.rubberBand(1000)
-            .then(endState => console.log(endState.finished ? 'finished' : 'canceled'));
+                .then(endState => console.log(endState.finished ? 'finished' : 'canceled'));
         },
         onPanResponderEnd: (e, gestureState) => {
             console.log('pan responder end', gestureState);
@@ -55,6 +55,8 @@ function RenderCampsite(props) {
                     ],
                     { cancelable: false }
                 );
+            } else if(recognizeComment(gestureState)) {
+                props.onShowModal();
             }
             return true;
         }
@@ -62,9 +64,9 @@ function RenderCampsite(props) {
 
     if (campsite) {
         return (
-            <Animatable.View
-                animation='fadeInDown'
-                duration={2000}
+            <Animatable.View 
+                animation='fadeInDown' 
+                duration={2000} 
                 delay={1000}
                 ref={view}
                 {...panResponder.panHandlers}>
@@ -76,13 +78,13 @@ function RenderCampsite(props) {
                     </Text>
                     <View style={styles.cardRow}>
                         <Icon
-                            name={props.favorite ? 'heart' : 'heart-o'}
+                            name={props.favorite ? 'heart'  :    'heart-o'}
                             type='font-awesome'
                             color='#f50'
                             raised
                             reverse
                             onPress={() => props.favorite ?
-                                console.log('Already set as a favorite') : props.markFavorite()}
+                                console.log('Already set as a   favorite') : props.   markFavorite()}
                         />
                         <Icon
                             style={styles.cardItem}
@@ -91,7 +93,7 @@ function RenderCampsite(props) {
                             color='#5637DD'
                             raised
                             reverse
-                            onPress={() => props.onShowModal()}
+                            onPress={() => props.onShowModal()  }
                         />
                     </View>
                 </Card>
@@ -107,12 +109,12 @@ function RenderComments({ comments }) {
         return (
             <View style={{ margin: 10 }}>
                 <Text style={{ fontSize: 14 }}>{item.text}</Text>
-                <Rating
+                <Rating 
                     startingValue={item.rating}
                     imageSize={10}
                     style={{
                         alignItems: 'flex-start',
-                        paddingVertical: '5%'
+                        paddingVertical: '5%' 
                     }}
                     readonly
                 />
@@ -146,7 +148,7 @@ class CampsiteInfo extends Component {
             text: ''
         };
     }
-
+    
     static navigationOptions = {
         title: 'Campsite Information'
     };
@@ -177,10 +179,10 @@ class CampsiteInfo extends Component {
         const campsiteId = this.props.navigation.getParam('campsiteId');
         const campsite = this.props.campsites.campsites.filter(campsite => campsite.id === campsiteId)[0];
         const comments = this.props.comments.comments.filter(comment => comment.campsiteId === campsiteId);
-        return (
+        return(
             <ScrollView>
-                <RenderCampsite campsite={campsite}
-                    favorite={this.props.favorites.includes(campsiteId)}
+                <RenderCampsite campsite={campsite} 
+                    favorite={this.props.favorites.includes(campsiteId)} 
                     markFavorite={() => this.markFavorite(campsiteId)}
                     onShowModal={() => this.toggleModal()}
                 />
@@ -201,8 +203,8 @@ class CampsiteInfo extends Component {
                         <Input
                             placeholder='Author'
                             leftIcon={{ type: 'font-awesome', name: 'user-o' }}
-                            leftIconContainerStyle={{ paddingRight: 10 }}
-                            onChangeText={author => this.setState({ author: author })}
+                            leftIconContainerStyle={{paddingRight: 10}}
+                            onChangeText={author => this.setState({author: author})}
                             value={this.state.author}
                         />
                         <Input
@@ -217,16 +219,16 @@ class CampsiteInfo extends Component {
                                 title='Submit'
                                 color='#5637DD'
                                 onPress={() => {
-                                    this.handleComment(campsiteId);
-                                    this.resetForm();
+                                this.handleComment(campsiteId);
+                                this.resetForm();
                                 }}
                             />
                         </View>
                         <View style={{ margin: 10 }}>
                             <Button
                                 onPress={() => {
-                                    this.toggleModal();
-                                    this.resetForm();
+                                this.toggleModal();
+                                this.resetForm();
                                 }}
                                 color='#808080'
                                 title='Cancel'
